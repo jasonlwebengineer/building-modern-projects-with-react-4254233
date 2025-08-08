@@ -1,5 +1,5 @@
 import express from 'express';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 const app = express();
 const port = 3000;
@@ -44,34 +44,41 @@ app.get('/api/todos', async (req, res) => {
   res.json(todosList);
 });
 
-app.post('/api/todos', (req, res) => {
+app.post('/api/todos', async (req, res) => {
+
   const newTodo = {
     id: `${Date.now()}`,
     text: req.body.text,
     isCompleted: false,
   };
-  todos.push(newTodo);
+  await todosCollection.insertOne(newTodo);
   res.json(newTodo);
 });
 
-app.delete('/api/todos/:id', (req, res) => {
+app.delete('/api/todos/:id', async (req, res) => {
+  
   const todoId = req.params.id;
-  todos = todos.filter(todo => todo.id !== todoId);
+  await todosCollection.deleteOne({ id: todoId });
   res.send();
 });
 
-app.put('/api/todos/:id', (req, res) => {
+app.put('/api/todos/:id', async (req, res) => {
+
   const todoId = req.params.id;
-  const updatedTodo = req.body;
- 
-  const todoIndex = todos.findIndex(todo => todo.id === todoId);
-
-  if (todoIndex === -1) {
-    return res.status(404).json({ message: 'Todo not found' });
+  const { isCompleted } = req.body;  // Extract only the field you want to update
+  
+  try {
+    const result = await todosCollection.findOneAndUpdate(
+      { id: todoId.toString() },
+      { $set: { isCompleted } },  // Update only the `isCompleted` field
+      { returnDocument: 'after' }
+    );
+    
+    res.json(result);
+  } catch (error) {
+    console.error('Error updating todo:', error);
+    res.status(500).json({ message: 'Failed to update todo' });
   }
-
-  todos[todoIndex] = { ...todos[todoIndex], ...updatedTodo };
-  res.json(todos[todoIndex]);
 });
 
 async function start() {
