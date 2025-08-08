@@ -15,26 +15,26 @@ async function connetToDB() {
   todosCollection = db.collection('todos');
 }
 
-// let todos = [
-//   { 
-//     id: "100", 
-//     text: 'Take out the garbage', 
-//     isCompleted: true 
-//   },
-//   { 
-//     id: "101", 
-//     text: 'Make dinner', 
-//     isCompleted: true 
-//   },
-//   { id: "102", 
-//     text: 'New Todo', 
-//     isCompleted: false 
-//   },
-//   { id: "500", 
-//     text: 'Pick up the kids*', 
-//     isCompleted: false 
-//   }
-// ];
+let todos = [
+  { 
+    id: "100", 
+    text: 'Take out the garbage', 
+    isCompleted: true 
+  },
+  { 
+    id: "101", 
+    text: 'Make dinner', 
+    isCompleted: true 
+  },
+  { id: "102", 
+    text: 'New Todo', 
+    isCompleted: false 
+  },
+  { id: "500", 
+    text: 'Pick up the kids*', 
+    isCompleted: false 
+  }
+];
 
 
 
